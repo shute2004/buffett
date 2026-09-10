@@ -16,11 +16,44 @@ const names = new Set(countries.map((row) => row[nameIndex]));
 if (names.size !== 193) throw new Error("countries.csv: 国名が重複しています");
 if (!names.has("日本")) throw new Error("countries.csv: 日本がありません");
 
+function parseRoulette(roulette, countryName) {
+  const outcomes = [];
+  const coveredFaces = new Set();
+
+  for (const rawSegment of roulette.split(";")) {
+    const segment = rawSegment.trim();
+    const match = segment.match(/^(\d+)(?:-(\d+))?:([+-]?\d+(?:\.\d+)?)%$/);
+    if (!match) throw new Error(`${countryName}: 不正なルーレット形式: ${segment}`);
+
+    const start = Number(match[1]);
+    const end = Number(match[2] ?? match[1]);
+    const value = Number(match[3]);
+    if (!Number.isFinite(value) || start < 1 || end > 10 || start > end) {
+      throw new Error(`${countryName}: 不正なルーレット範囲または値: ${segment}`);
+    }
+
+    for (let face = start; face <= end; face += 1) {
+      if (coveredFaces.has(face)) throw new Error(`${countryName}: ルーレット目 ${face} が重複しています`);
+      coveredFaces.add(face);
+    }
+    outcomes.push(value);
+  }
+
+  if (coveredFaces.size !== 10 || [...coveredFaces].some((face) => face < 1 || face > 10)) {
+    throw new Error(`${countryName}: ルーレットは1〜10を重複なく全てカバーする必要があります`);
+  }
+  if (!outcomes.some((value) => value > 0)) {
+    throw new Error(`${countryName}: プラスのルーレット目がありません`);
+  }
+  if (!outcomes.some((value) => value < 0)) {
+    throw new Error(`${countryName}: マイナスのルーレット目がありません`);
+  }
+
+  return outcomes;
+}
+
 for (const row of countries) {
-  const name = row[nameIndex];
-  const roulette = row[rouletteIndex] ?? "";
-  if (!roulette.includes("+")) throw new Error(`${name}: プラスのルーレット目がありません`);
-  if (!roulette.includes("-")) throw new Error(`${name}: マイナスのルーレット目がありません`);
+  parseRoulette(row[rouletteIndex] ?? "", row[nameIndex]);
 }
 
 const connected = new Set();

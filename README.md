@@ -72,8 +72,10 @@ GitHub Actionsでもunit test、build、Chromium上のPlaywright E2Eを実行し
 
 これらの値はゲームバランス用のパラメータであり、投資判断や各国の現在の経済状況を示す権威的データではありません。
 
+WGI由来部分の出典、CC BY 4.0、ゲーム用に行った変換・編集については [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) に明記しています。
+
 地図形状はnpm依存の `world-atlas`、座標・国旗等は `world-countries` を実行時に利用します。隣接グラフ `data/adjacency.csv` はゲーム盤面用に整理した接続関係です。
 
 ## License
 
-Source-visible, all rights reserved. See [LICENSE](LICENSE). Copying, modification, redistribution, commercial use, and derivative works are not permitted without explicit permission except where applicable law or platform terms require otherwise.
+Source-visible, all rights reserved. See [LICENSE](LICENSE). Copying, modification, redistribution, commercial use, and derivative works are not permitted without explicit permission except where applicable law or platform terms require otherwise. Third-party data and dependencies remain subject to their respective licenses and terms.
